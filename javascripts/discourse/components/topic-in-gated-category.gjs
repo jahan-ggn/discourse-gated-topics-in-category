@@ -1,4 +1,5 @@
 import Component from "@ember/component";
+import { action } from "@ember/object";
 import { tagName } from "@ember-decorators/component";
 import DButton from "discourse/components/d-button";
 import routeAction from "discourse/helpers/route-action";
@@ -55,6 +56,15 @@ export default class TopicInGatedCategory extends Component {
     return !hidden;
   }
 
+  @action
+  redirectToSignup() {
+    window.open(
+      i18n(themePrefix("sign_up_redirect_url")),
+      "_blank",
+      "noopener"
+    );
+  }
+
   <template>
     {{#if this.shouldShow}}
       <div class="custom-gated-topic-container">
@@ -70,7 +80,7 @@ export default class TopicInGatedCategory extends Component {
           <div class="custom-gated-topic-content--cta">
             <div class="custom-gated-topic-content--cta__signup">
               <DButton
-                @action={{routeAction "showCreateAccount"}}
+                @action={{this.redirectToSignup}}
                 class="btn-primary btn-large sign-up-button"
                 @translatedLabel={{i18n (themePrefix "signup_cta_label")}}
               />

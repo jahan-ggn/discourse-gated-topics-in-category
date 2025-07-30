@@ -5,3 +5,4 @@ en:
   subheading_text: "Create an account to view this content"
   signup_cta_label: "Sign Up"
   login_cta_label: "Already have an account? Sign in"
+  sign_up_redirect_url: "https://www.dailymaverick.co.za/insider/?dm_source=dmc&dm_medium=link&dm_campaign=dmc"
