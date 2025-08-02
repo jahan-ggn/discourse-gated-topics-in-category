@@ -1,5 +1,6 @@
 import Component from "@ember/component";
 import { action } from "@ember/object";
+import { service } from "@ember/service";
 import { tagName } from "@ember-decorators/component";
 import DButton from "discourse/components/d-button";
 import routeAction from "discourse/helpers/route-action";
@@ -8,6 +9,8 @@ import { i18n } from "discourse-i18n";
 
 @tagName("")
 export default class TopicInGatedCategory extends Component {
+  @service router;
+
   hidden = true;
   enabledCategories = settings.enabled_categories
     .split("|")
@@ -36,6 +39,12 @@ export default class TopicInGatedCategory extends Component {
     // b) component setting is empty
     // c) user is logged in
     const gatedByTag = this.tags?.some((t) => this.enabledTags.includes(t));
+
+    if (this.forceShow) {
+      document.body.classList.add("topic-in-gated-category");
+      this.set("hidden", false);
+      return;
+    }
 
     if (
       (!this.categoryId && !gatedByTag) ||
