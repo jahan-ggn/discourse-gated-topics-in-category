@@ -33,12 +33,17 @@ export default class TopicInGatedCategory extends Component {
     document.body.classList.remove("topic-in-gated-category");
   }
 
+  isUserInInsidersGroup() {
+    if (!this.currentUser || !this.currentUser.groups) {
+      return false;
+    }
+
+    return this.currentUser.groups.some((g) => g.name === "insider");
+  }
+
   recalculate() {
-    // do nothing if:
-    // a) topic does not have a category and does not have a gated tag
-    // b) component setting is empty
-    // c) user is logged in
     const gatedByTag = this.tags?.some((t) => this.enabledTags.includes(t));
+    const gatedByCategory = this.enabledCategories.includes(this.categoryId);
 
     if (this.forceShow) {
       document.body.classList.add("topic-in-gated-category");
@@ -46,17 +51,23 @@ export default class TopicInGatedCategory extends Component {
       return;
     }
 
-    if (
-      (!this.categoryId && !gatedByTag) ||
-      (this.enabledCategories.length === 0 && this.enabledTags.length === 0) ||
-      this.currentUser
-    ) {
+    // Skip gate if neither tag nor category is gated
+    if (!gatedByTag && !gatedByCategory) {
       return;
     }
 
-    if (this.enabledCategories.includes(this.categoryId) || gatedByTag) {
+    // Show gate if user not logged in
+    if (!this.currentUser) {
       document.body.classList.add("topic-in-gated-category");
       this.set("hidden", false);
+      return;
+    }
+
+    // Show gate if logged-in user is not in insiders group
+    if (!this.isUserInInsidersGroup()) {
+      document.body.classList.add("topic-in-gated-category");
+      this.set("hidden", false);
+      return;
     }
   }
 
